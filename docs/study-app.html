@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Buddy - Learn & Play!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            min-height: 500px;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #764ba2;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 1em;
+        }
+
+        .mode-selection {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .mode-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            flex: 1;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-card.flashcard {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        .mode-card.quiz {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .mode-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .mode-card .emoji {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            font-size: 1em;
+            font-family: monospace;
+            margin: 20px 0;
+            resize: vertical;
+        }
+
+        .flashcard {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 20px;
+            padding: 60px 40px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .flashcard:hover {
+            transform: scale(1.02);
+        }
+
+        .flashcard.flipped {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .flashcard-hint {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.7em;
+            color: #666;
+            font-style: italic;
+        }
+
+        .quiz-question {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question h3 {
+            color: #333;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .quiz-option:hover {
+            background: #f0f3ff;
+            transform: translateX(10px);
+        }
+
+        .quiz-option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .quiz-option.correct {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: white;
+        }
+
+        .quiz-option.incorrect {
+            background: #f87171;
+            border-color: #f87171;
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .progress {
+            font-size: 1.2em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 4em;
+            color: #667eea;
+            margin: 30px 0;
+            font-weight: bold;
+        }
+
+        .score-message {
+            font-size: 1.5em;
+            color: #764ba2;
+            margin-bottom: 30px;
+        }
+
+        .format-help {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 0.9em;
+            text-align: left;
+        }
+
+        .format-help h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .format-help pre {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .mode-selection {
+                flex-direction: column;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-buttons {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="screen active">
+            <h1>🎓 Study Buddy</h1>
+            <h2>Choose your study mode!</h2>
+            <div class="mode-selection">
+                <div class="mode-card flashcard" onclick="app.selectMode('flashcard')">
+                    <div class="emoji">🎴</div>
+                    <h3>Flashcards</h3>
+                    <p>Flip and learn!</p>
+                </div>
+                <div class="mode-card quiz" onclick="app.selectMode('quiz')">
+                    <div class="emoji">📝</div>
+                    <h3>Quiz</h3>
+                    <p>Test yourself!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Screen -->
+        <div id="inputScreen" class="screen">
+            <h2 id="inputTitle">Enter Your Content</h2>
+            <div class="format-help">
+                <h4 id="formatTitle">Format:</h4>
+                <div id="flashcardFormat" style="display: none;">
+                    <p><strong>CSV Format:</strong></p>
+                    <pre>Front,Back
+What is 2+2?,4
+Capital of France?,Paris</pre>
+                    <p><strong>JSON Format:</strong></p>
+                    <pre>[
+  {"front": "What is 2+2?", "back": "4"},
+  {"front": "Capital of France?", "back": "Paris"}
+]</pre>
+                </div>
+                <div id="quizFormat" style="display: none;">
+                    <p><strong>CSV Format:</strong></p>
+                    <pre>Question,Option A,Option B,Option C,Option D,Correct
+What is 2+2?,3,4,5,6,B</pre>
+                    <p><strong>JSON Format:</strong></p>
+                    <pre>[
+  {
+    "question": "What is 2+2?",
+    "options": ["3", "4", "5", "6"],
+    "correct": 1
+  }
+]</pre>
+                </div>
+            </div>
+            <textarea id="contentInput" placeholder="Paste your content here..."></textarea>
+            <div class="button-group">
+                <button class="btn btn-secondary btn-small" onclick="app.goHome()">← Back</button>
+                <button class="btn" onclick="app.startStudy()">Start! 🚀</button>
+            </div>
+        </div>
+
+        <!-- Flashcard Screen -->
+        <div id="flashcardScreen" class="screen">
+            <div class="flashcard" id="flashcard" onclick="app.flipCard()">
+                <div id="flashcardContent"></div>
+                <div class="flashcard-hint">Click to flip!</div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-small" onclick="app.shuffleCards()">🔀 Shuffle</button>
+                <div class="progress" id="flashcardProgress">1 / 10</div>
+                <div class="nav-buttons">
+                    <button class="btn btn-small" onclick="app.prevCard()">← Prev</button>
+                    <button class="btn btn-small" onclick="app.nextCard()">Next →</button>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-secondary btn-small" onclick="app.finishFlashcards()">Finish</button>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="screen">
+            <div class="quiz-question">
+                <h3 id="quizQuestion"></h3>
+                <div class="quiz-options" id="quizOptions"></div>
+            </div>
+            <div class="navigation">
+                <button class="btn btn-small" onclick="app.shuffleQuiz()">🔀 Shuffle</button>
+                <div class="progress" id="quizProgress">1 / 10</div>
+                <div class="nav-buttons">
+                    <button class="btn btn-small" onclick="app.prevQuestion()">← Prev</button>
+                    <button class="btn btn-small" onclick="app.nextQuestion()">Next →</button>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-success" onclick="app.submitQuiz()">Submit Quiz 📊</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="screen">
+            <div class="results">
+                <h2>🎉 Quiz Complete!</h2>
+                <div class="score-display" id="scoreDisplay">0/0</div>
+                <div class="score-message" id="scoreMessage">Great job!</div>
+                <div class="button-group">
+                    <button class="btn" onclick="app.restartQuiz()">🔄 Try Again</button>
+                    <button class="btn btn-secondary" onclick="app.goHome()">🏠 Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = {
+            mode: null,
+            data: [],
+            currentIndex: 0,
+            isFlipped: false,
+            userAnswers: [],
+
+            init() {
+                this.loadFromStorage();
+            },
+
+            selectMode(mode) {
+                this.mode = mode;
+                this.showScreen('inputScreen');
+
+                if (mode === 'flashcard') {
+                    document.getElementById('inputTitle').textContent = 'Enter Your Flashcards';
+                    document.getElementById('flashcardFormat').style.display = 'block';
+                    document.getElementById('quizFormat').style.display = 'none';
+                } else {
+                    document.getElementById('inputTitle').textContent = 'Enter Your Quiz Questions';
+                    document.getElementById('flashcardFormat').style.display = 'none';
+                    document.getElementById('quizFormat').style.display = 'block';
+                }
+            },
+
+            startStudy() {
+                const input = document.getElementById('contentInput').value.trim();
+                if (!input) {
+                    alert('Please enter some content!');
+                    return;
+                }
+
+                try {
+                    this.parseInput(input);
+                    this.saveToStorage();
+                    this.currentIndex = 0;
+                    this.shuffle();
+
+                    if (this.mode === 'flashcard') {
+                        this.showFlashcard();
+                        this.showScreen('flashcardScreen');
+                    } else {
+                        this.userAnswers = new Array(this.data.length).fill(null);
+                        this.showQuestion();
+                        this.showScreen('quizScreen');
+                    }
+                } catch (error) {
+                    alert('Error parsing content: ' + error.message + '\n\nPlease check the format and try again.');
+                }
+            },
+
+            parseInput(input) {
+                input = input.trim();
+
+                // Try JSON first
+                if (input.startsWith('[')) {
+                    this.data = JSON.parse(input);
+                } else {
+                    // Parse CSV
+                    const lines = input.split('\n').filter(line => line.trim());
+                    const headers = lines[0].split(',').map(h => h.trim());
+
+                    this.data = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const values = this.parseCSVLine(lines[i]);
+
+                        if (this.mode === 'flashcard') {
+                            this.data.push({
+                                front: values[0],
+                                back: values[1]
+                            });
+                        } else {
+                            // Quiz
+                            const correctIndex = values[5].toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0);
+                            this.data.push({
+                                question: values[0],
+                                options: [values[1], values[2], values[3], values[4]],
+                                correct: correctIndex
+                            });
+                        }
+                    }
+                }
+
+                if (this.data.length === 0) {
+                    throw new Error('No data found');
+                }
+            },
+
+            parseCSVLine(line) {
+                const values = [];
+                let current = '';
+                let inQuotes = false;
+
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        values.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                values.push(current.trim());
+                return values;
+            },
+
+            shuffle() {
+                for (let i = this.data.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [this.data[i], this.data[j]] = [this.data[j], this.data[i]];
+                }
+            },
+
+            // Flashcard functions
+            showFlashcard() {
+                const card = this.data[this.currentIndex];
+                const flashcard = document.getElementById('flashcard');
+                const content = document.getElementById('flashcardContent');
+
+                content.textContent = this.isFlipped ? card.back : card.front;
+                flashcard.classList.toggle('flipped', this.isFlipped);
+
+                document.getElementById('flashcardProgress').textContent =
+                    `${this.currentIndex + 1} / ${this.data.length}`;
+            },
+
+            flipCard() {
+                this.isFlipped = !this.isFlipped;
+                this.showFlashcard();
+            },
+
+            nextCard() {
+                if (this.currentIndex < this.data.length - 1) {
+                    this.currentIndex++;
+                    this.isFlipped = false;
+                    this.showFlashcard();
+                }
+            },
+
+            prevCard() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.isFlipped = false;
+                    this.showFlashcard();
+                }
+            },
+
+            shuffleCards() {
+                this.shuffle();
+                this.currentIndex = 0;
+                this.isFlipped = false;
+                this.showFlashcard();
+            },
+
+            finishFlashcards() {
+                this.goHome();
+            },
+
+            // Quiz functions
+            showQuestion() {
+                const question = this.data[this.currentIndex];
+                document.getElementById('quizQuestion').textContent = question.question;
+
+                const optionsDiv = document.getElementById('quizOptions');
+                optionsDiv.innerHTML = '';
+
+                question.options.forEach((option, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'quiz-option';
+                    div.textContent = String.fromCharCode(65 + index) + '. ' + option;
+
+                    if (this.userAnswers[this.currentIndex] === index) {
+                        div.classList.add('selected');
+                    }
+
+                    div.onclick = () => this.selectOption(index);
+                    optionsDiv.appendChild(div);
+                });
+
+                document.getElementById('quizProgress').textContent =
+                    `${this.currentIndex + 1} / ${this.data.length}`;
+            },
+
+            selectOption(index) {
+                this.userAnswers[this.currentIndex] = index;
+                this.showQuestion();
+            },
+
+            nextQuestion() {
+                if (this.currentIndex < this.data.length - 1) {
+                    this.currentIndex++;
+                    this.showQuestion();
+                }
+            },
+
+            prevQuestion() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.showQuestion();
+                }
+            },
+
+            shuffleQuiz() {
+                // Save current answers with question text as key
+                const answerMap = {};
+                this.data.forEach((q, i) => {
+                    if (this.userAnswers[i] !== null) {
+                        answerMap[q.question] = this.userAnswers[i];
+                    }
+                });
+
+                this.shuffle();
+
+                // Restore answers based on question text
+                this.userAnswers = this.data.map(q => answerMap[q.question] ?? null);
+
+                this.currentIndex = 0;
+                this.showQuestion();
+            },
+
+            submitQuiz() {
+                // Check if all questions are answered
+                const unanswered = this.userAnswers.filter(a => a === null).length;
+                if (unanswered > 0) {
+                    if (!confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) {
+                        return;
+                    }
+                }
+
+                // Calculate score
+                let correct = 0;
+                this.data.forEach((question, index) => {
+                    if (this.userAnswers[index] === question.correct) {
+                        correct++;
+                    }
+                });
+
+                const percentage = Math.round((correct / this.data.length) * 100);
+
+                document.getElementById('scoreDisplay').textContent =
+                    `${correct} / ${this.data.length}`;
+
+                let message = '';
+                if (percentage === 100) {
+                    message = '🌟 Perfect! You\'re a genius!';
+                } else if (percentage >= 80) {
+                    message = '🎉 Excellent work!';
+                } else if (percentage >= 60) {
+                    message = '👍 Good job! Keep practicing!';
+                } else {
+                    message = '💪 Keep trying! You\'ll get better!';
+                }
+                document.getElementById('scoreMessage').textContent = message;
+
+                this.showScreen('resultsScreen');
+            },
+
+            restartQuiz() {
+                this.currentIndex = 0;
+                this.shuffle();
+                this.userAnswers = new Array(this.data.length).fill(null);
+                this.showQuestion();
+                this.showScreen('quizScreen');
+            },
+
+            // Navigation
+            showScreen(screenId) {
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+                document.getElementById(screenId).classList.add('active');
+            },
+
+            goHome() {
+                this.mode = null;
+                this.data = [];
+                this.currentIndex = 0;
+                this.isFlipped = false;
+                this.userAnswers = [];
+                document.getElementById('contentInput').value = '';
+                this.showScreen('homeScreen');
+            },
+
+            // Storage
+            saveToStorage() {
+                localStorage.setItem('studyBuddyMode', this.mode);
+                localStorage.setItem('studyBuddyData', JSON.stringify(this.data));
+            },
+
+            loadFromStorage() {
+                const mode = localStorage.getItem('studyBuddyMode');
+                const data = localStorage.getItem('studyBuddyData');
+
+                if (mode && data) {
+                    this.mode = mode;
+                    this.data = JSON.parse(data);
+                }
+            }
+        };
+
+        // Initialize app
+        app.init();
+    </script>
+</body>
+</html>
