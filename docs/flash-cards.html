@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!-- saved from url=(1347)https://ffe29f0c5128f7cfc2387c6fb2110b9ebb7fcbb4982d8476c9f3db9-apidata.googleusercontent.com/download/storage/v1/b/public_flash_cards/o/julia-cards.html?jk=AUzyfrjrnR2h7oXTQ6y-bStz20lU4Hg8sEtGtIc3zAC2JWOY7glaQETAXk8vTPaSd790Tv2q9GHN_Bk_9hhz-DhMaQYUIzXLy-JHUdIiPtCvtLhBspd911xLW24LI7aoMnDkB2EWLZrO69U_UA6Nara0dgqKKfoM2UX7Gt8ifAD9sHBqXNyNdf6xdXPMqNe2gvS8nXRY0ltkhaPgE4xJ-Vlyg0_vQKfez9g6CaJMe9ibHsyEBUcHkYecQzve2rCevITyDmGa6xWnYf9to44X8xlKr8K6YDX07PedTXEplS_2j4FjeGZ6xbreVg5TfXuctNimMJbhzWl8KAdoPAEnhki8-rfO39T-mohD6Rz1rMtoVQnD2t1VKzJakIagGhBMNXCnUq3TmS-iFTjKzwwAjFeLm-VSddIcAYE1ss14zocF_7vQ0bfZzg9FawmAjdfn7_4NLqr9XLjdh3yl8-L_wU675RvZTpNthFrHvCujWGAKglJjVxjFvTWk-MYt3vmjV16bNnyxFF_52AHIHFE_mFvUrBQS3Dxw1SLSYBs2zTT0fAPpq96ldMESd3FiIFl3dTpUYORvmCUXfNf7IbHzlQGNVRqMwOPEkr0rNCDP9zpBYEDg8QTfywf7R4cKVpeG1lite3Uecy3PKvQ1pgPiXIp5hPlOG24yuX9Fbl4T8kCywD76iyOwSG974OkqYzootJ7y8WwNgMMxyV-bdfWgvY3ItmvQcxG-ltll2SPGd73-DynYujEgLsB1huKmlyWA69Ff9TvInzfZ0fbDBw3tZO1028_R-Z25AhtLczdCklto3_5Jb-JpveFfXf4j-VItmeioqkUObxxPpod5jEloSrlV3o_NPBaFWZw9YvRN_unzSuf7wgZ-k6KphYsOCAplJ-Utp14R0PPdz4wVlLuI-aXlaTbn3R3KxPefzQX4cTlsGVFvHOFSeCEsEf5BXUGHpWmmv1XD92uSxT9PXMNZmo82U3jw5ei2QWi9PlUIREQ4RuISkXUivWyo2cWBFhTdrIXLwkIYP7NTTva3KOah7U5aofEYvj6ogwgZ6W98nFbu_exogfRYR6Tac7MpltMuw81JgqJTOe5u-xAtr3kNxCHWhz59HcBBj8K_MzyV7lEjIzl_8NhuHFmqXOU2wapx1HlwBKiCgwYaIRhS4nfk3vS0GY8VgK8&isca=1 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Classical Roots Study Tool</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --bg: #f8fafc;
+            --card-front: #ffffff;
+            --card-back: #f1f5f9;
+            --root-color: #eff6ff;
+            --root-border: #3b82f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #1e293b;
+            overflow: hidden; /* Prevent bounce on mobile */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
+        }
+
+        .progress {
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Flashcard Styles - Mobile First */
+        .flashcard {
+            perspective: 1000px;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            max-height: 400px;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            user-select: none;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-radius: 1.25rem;
+        }
+
+        .flashcard.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            box-sizing: border-box;
+            border-radius: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-front {
+            background-color: var(--card-front);
+        }
+
+        .card-back {
+            background-color: var(--card-back);
+            transform: rotateY(180deg);
+            font-size: 1rem;
+            line-height: 1.5;
+            overflow-y: auto; /* Handle long definitions on small screens */
+        }
+
+        /* Root styling */
+        .is-root .card-front {
+            background-color: var(--root-color);
+            border: 2px solid var(--root-border);
+        }
+        
+        .type-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            margin-bottom: 1rem;
+        }
+
+        .term {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        button {
+            padding: 14px 0;
+            border-radius: 1rem;
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .btn-nav {
+            background-color: white;
+            color: var(--secondary);
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-nav:disabled {
+            opacity: 0.4;
+            box-shadow: none;
+        }
+
+        .btn-shuffle {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .shortcuts {
+            display: none; /* Hide keyboard shortcuts on mobile */
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--secondary);
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 768px) {
+            .container {
+                padding: 40px;
+                height: auto;
+            }
+            .flashcard {
+                height: 340px;
+                aspect-ratio: auto;
+            }
+            .term {
+                font-size: 2.25rem;
+            }
+            .shortcuts {
+                display: block;
+            }
+            .progress {
+                font-size: 0.875rem;
+            }
+            button {
+                font-size: 1rem;
+                padding: 12px 24px;
+            }
+            .controls {
+                display: flex;
+                justify-content: center;
+            }
+            .btn-nav {
+                width: 120px;
+            }
+            .btn-shuffle {
+                width: 140px;
+            }
+        }
+
+        kbd {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1271.0" data-gr-ext-installed="">
+
+    <div class="container">
+        <div class="progress" id="progress-text">Card 1 of 40</div>
+
+        <div class="flashcard is-root" id="main-card">
+            <div class="card-inner" id="card-content">
+                    <div class="card-front">
+                        <span class="type-label">ROOT</span>
+                        <div class="term">HUMANUS</div>
+                    </div>
+                    <div class="card-back">
+                        <div>Latin: human being</div>
+                    </div>
+                </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn-nav" id="prev-btn" onclick="prevCard()" disabled="">Prev</button>
+            <button class="btn-shuffle" onclick="shuffleCards()">Shuffle</button>
+            <button class="btn-nav" id="next-btn" onclick="nextCard()">Next</button>
+        </div>
+
+        <div class="shortcuts">
+            <kbd>Space</kbd> Flip &nbsp; <kbd>←</kbd> <kbd>→</kbd> Navigate
+        </div>
+    </div>
+
+    <script>
+        const vocabData = [
+            // Lesson 1 Roots
+            { front: "HUMANUS", back: "Latin: human being", type: "root" },
+            { front: "ANTHROPOS", back: "Greek: human being; man", type: "root" },
+            { front: "HOMO, HOMINIS", back: "Latin: man", type: "root" },
+            { front: "VIR", back: "Latin: man", type: "root" },
+            { front: "GYNE", back: "Greek: woman", type: "root" },
+            { front: "FEMINA", back: "Latin: woman", type: "root" },
+            { front: "AUTOS", back: "Greek: self", type: "root" },
+            { front: "EGO", back: "Latin: I", type: "root" },
+
+            // Lesson 1 Words
+            { front: "Humane", back: "Having worthy qualities of human beings, such as kindness or compassion." },
+            { front: "Humanism", back: "A system of thought in which human interests and values are primary." },
+            { front: "Humanities", back: "Branches of knowledge concerned with human beings and their culture: philosophy, literature, and the fine arts." },
+            { front: "Anthropology", back: "The scientific study of the origins, cultural development, and customs of human beings." },
+            { front: "Misanthrope", back: "A person who hates all people." },
+            { front: "Homicide", back: "The killing of one person by another." },
+            { front: "Virile", back: "Having certain characteristics popularly associated with men, especially physical strength and assertiveness." },
+            { front: "Gynecology", back: "The branch of medicine dealing with disorders and treatment of the reproductive system in women." },
+            { front: "Feminism", back: "The belief that women should possess the same political and economic rights as men." },
+            { front: "Autocrat", back: "A ruler who has absolute or unlimited power; a despot." },
+            { front: "Autonomy", back: "The condition of being self-governing; independence." },
+            { front: "Autopsy", back: "The examination of a corpse to determine the cause of death." },
+            { front: "Egoism", back: "Conceit; valuing everything only in reference to one's personal interest." },
+
+            // Lesson 2 Roots
+            { front: "GENOS, GENEOS", back: "Greek: race, family", type: "root" },
+            { front: "GENS, GENTIS", back: "Latin: race, clan, family", type: "root" },
+            { front: "GENUS, GENERIS", back: "Latin: birth, kind, tribe, race", type: "root" },
+            { front: "GIGNO, GIGNERE", back: "Latin: to beget, to bear, to bring forth", type: "root" },
+
+            // Lesson 2 Words
+            { front: "Genealogy", back: "A record of descent from one's ancestors; the study of family records." },
+            { front: "Genocide", back: "The planned annihilation of a racial, political, or cultural group." },
+            { front: "Genre", back: "A type, class, or category, especially of fine art or literature." },
+            { front: "Genteel", back: "Well-mannered; polite; refined." },
+            { front: "Gentile", back: "Anyone not of the Jewish faith." },
+            { front: "Gentry", back: "Aristocratic or well-bred people." },
+            { front: "Heterogeneous", back: "Having parts that are unrelated or completely different." },
+            { front: "Homogeneous", back: "Of the same kind or nature; uniform structure throughout." },
+            { front: "Congenital", back: "Existing at birth but not hereditary." },
+            { front: "Engender", back: "To give rise to; to bring into existence." },
+            { front: "Genesis", back: "A beginning or origin." },
+            { front: "Indigenous", back: "Occurring in or characterizing an area; native." },
+            { front: "Ingenious", back: "Cleverly inventive and resourceful." },
+            { front: "Progenitor", back: "A direct ancestor; an originator of a line of descent." },
+            { front: "Progeny", back: "Children or descendants; offspring." }
+        ];
+
+        let currentCards = [...vocabData];
+        let currentIndex = 0;
+
+        const cardElement = document.getElementById('main-card');
+        const cardContent = document.getElementById('card-content');
+        const progressText = document.getElementById('progress-text');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        function updateCard() {
+            const data = currentCards[currentIndex];
+            
+            // Reset flip state before content change
+            cardElement.classList.remove('flipped');
+            
+            // Allow time for un-flip animation if necessary
+            setTimeout(() => {
+                cardElement.className = `flashcard ${data.type === 'root' ? 'is-root' : ''}`;
+                
+                cardContent.innerHTML = `
+                    <div class="card-front">
+                        ${data.type === 'root' ? '<span class="type-label">ROOT</span>' : '<span class="type-label">WORD</span>'}
+                        <div class="term">${data.front}</div>
+                    </div>
+                    <div class="card-back">
+                        <div>${data.back}</div>
+                    </div>
+                `;
+                
+                progressText.innerText = `Card ${currentIndex + 1} of ${currentCards.length}`;
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === currentCards.length - 1;
+            }, 50);
+        }
+
+        function nextCard() {
+            if (currentIndex < currentCards.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        function shuffleCards() {
+            currentIndex = 0;
+            currentCards = [...currentCards].sort(() => Math.random() - 0.5);
+            updateCard();
+        }
+
+        // Event Listeners
+        cardElement.addEventListener('click', () => {
+            cardElement.classList.toggle('flipped');
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                cardElement.classList.toggle('flipped');
+            } else if (e.code === 'ArrowRight') {
+                nextCard();
+            } else if (e.code === 'ArrowLeft') {
+                prevCard();
+            }
+        });
+
+        // Initialize
+        updateCard();
+    </script>
+
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
