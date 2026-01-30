@@ -299,6 +299,73 @@
             gap: 10px;
         }
 
+        .review-container {
+            max-height: 500px;
+            overflow-y: auto;
+            margin: 20px 0;
+            padding-right: 10px;
+        }
+
+        .review-item {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .review-item.incorrect {
+            border-left-color: #f87171;
+        }
+
+        .review-item.correct {
+            border-left-color: #4ade80;
+        }
+
+        .review-question {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .review-answer {
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 8px 0;
+            font-size: 1em;
+        }
+
+        .review-answer.user-answer {
+            background: #fecaca;
+            border: 2px solid #f87171;
+        }
+
+        .review-answer.user-answer.correct-user {
+            background: #bbf7d0;
+            border: 2px solid #4ade80;
+        }
+
+        .review-answer.correct-answer {
+            background: #bbf7d0;
+            border: 2px solid #4ade80;
+        }
+
+        .review-label {
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .review-label.wrong {
+            color: #f87171;
+        }
+
+        .review-label.right {
+            color: #4ade80;
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -323,6 +390,10 @@
 
             .btn {
                 width: 100%;
+            }
+
+            .review-container {
+                max-height: 400px;
             }
         }
     </style>
@@ -429,9 +500,20 @@ What is 2+2?,3,4,5,6,B</pre>
                 <div class="score-display" id="scoreDisplay">0/0</div>
                 <div class="score-message" id="scoreMessage">Great job!</div>
                 <div class="button-group">
+                    <button class="btn btn-success" onclick="app.showReview()">📋 Review Answers</button>
                     <button class="btn" onclick="app.restartQuiz()">🔄 Try Again</button>
                     <button class="btn btn-secondary" onclick="app.goHome()">🏠 Home</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="reviewScreen" class="screen">
+            <h2>📋 Answer Review</h2>
+            <div class="review-container" id="reviewContainer"></div>
+            <div class="button-group">
+                <button class="btn" onclick="app.restartQuiz()">🔄 Try Again</button>
+                <button class="btn btn-secondary" onclick="app.goHome()">🏠 Home</button>
             </div>
         </div>
     </div>
@@ -703,6 +785,57 @@ What is 2+2?,3,4,5,6,B</pre>
                 this.userAnswers = new Array(this.data.length).fill(null);
                 this.showQuestion();
                 this.showScreen('quizScreen');
+            },
+
+            showReview() {
+                const container = document.getElementById('reviewContainer');
+                container.innerHTML = '';
+
+                this.data.forEach((question, index) => {
+                    const userAnswer = this.userAnswers[index];
+                    const correctAnswer = question.correct;
+                    const isCorrect = userAnswer === correctAnswer;
+
+                    const reviewItem = document.createElement('div');
+                    reviewItem.className = `review-item ${isCorrect ? 'correct' : 'incorrect'}`;
+
+                    let html = `
+                        <div class="review-question">
+                            ${index + 1}. ${question.question}
+                        </div>
+                    `;
+
+                    if (userAnswer !== null) {
+                        const labelClass = isCorrect ? 'right' : 'wrong';
+                        const answerClass = isCorrect ? 'correct-user' : '';
+                        const label = isCorrect ? '✓ Your Answer (Correct!)' : '✗ Your Answer';
+
+                        html += `
+                            <div class="review-label ${labelClass}">${label}</div>
+                            <div class="review-answer user-answer ${answerClass}">
+                                ${String.fromCharCode(65 + userAnswer)}. ${question.options[userAnswer]}
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="review-label wrong">✗ Not Answered</div>
+                        `;
+                    }
+
+                    if (!isCorrect) {
+                        html += `
+                            <div class="review-label right" style="margin-top: 10px;">✓ Correct Answer</div>
+                            <div class="review-answer correct-answer">
+                                ${String.fromCharCode(65 + correctAnswer)}. ${question.options[correctAnswer]}
+                            </div>
+                        `;
+                    }
+
+                    reviewItem.innerHTML = html;
+                    container.appendChild(reviewItem);
+                });
+
+                this.showScreen('reviewScreen');
             },
 
             // Navigation
