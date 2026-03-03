@@ -132,11 +132,18 @@
             font-size: 1.8em;
             margin-bottom: 10px;
             color: #333;
+            line-height: 1.1;
         }
 
         .mode-card .emoji {
             font-size: 4em;
             margin-bottom: 10px;
+        }
+
+        .mode-card p {
+            font-size: 1.1em;
+            line-height: 1.3;
+            color: #333;
         }
 
         textarea {
@@ -181,6 +188,67 @@
             font-size: 0.7em;
             color: #666;
             font-style: italic;
+        }
+
+        .flashcard-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .flashcard-status {
+            text-align: center;
+            color: #764ba2;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 1.5em;
+        }
+
+        .btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .flashcard-report-summary {
+            background: #f8f9ff;
+            border-radius: 18px;
+            padding: 24px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .flashcard-report-list {
+            max-height: 320px;
+            overflow-y: auto;
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-right: 10px;
+        }
+
+        .flashcard-report-item {
+            background: #fff7ed;
+            border-left: 5px solid #f87171;
+            border-radius: 14px;
+            padding: 18px;
+            text-align: left;
+        }
+
+        .flashcard-report-item.unmarked {
+            background: #f8f9ff;
+            border-left-color: #94a3b8;
+        }
+
+        .flashcard-report-label {
+            font-size: 0.85em;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #764ba2;
+            margin-bottom: 10px;
         }
 
         .quiz-question {
@@ -287,6 +355,25 @@
             margin: 10px 0;
         }
 
+        .share-tools {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 18px;
+            margin-top: 20px;
+        }
+
+        .share-tools p {
+            color: #555;
+            margin-bottom: 12px;
+        }
+
+        .share-status {
+            min-height: 1.5em;
+            margin-top: 12px;
+            color: #764ba2;
+            font-weight: bold;
+        }
+
         .button-group {
             display: flex;
             gap: 15px;
@@ -367,16 +454,49 @@
         }
 
         @media (max-width: 600px) {
+            body {
+                align-items: flex-start;
+                padding: 12px;
+            }
+
             .container {
-                padding: 20px;
+                padding: 24px 20px;
+                border-radius: 24px;
             }
 
             h1 {
-                font-size: 2em;
+                font-size: 1.95em;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 1.45em;
+                margin-bottom: 16px;
             }
 
             .mode-selection {
                 flex-direction: column;
+                gap: 18px;
+                margin-top: 24px;
+            }
+
+            .mode-card {
+                padding: 28px 22px;
+                border-radius: 18px;
+            }
+
+            .mode-card .emoji {
+                font-size: 3em;
+                margin-bottom: 14px;
+            }
+
+            .mode-card h3 {
+                font-size: 1.45em;
+                margin-bottom: 8px;
+            }
+
+            .mode-card p {
+                font-size: 1em;
             }
 
             .navigation {
@@ -461,6 +581,11 @@ What is 2+2?,3,4,5,6,B</pre>
                 <div id="flashcardContent"></div>
                 <div class="flashcard-hint">Click to flip!</div>
             </div>
+            <div class="flashcard-actions">
+                <button class="btn btn-success btn-small" id="flashcardCorrectBtn" onclick="app.recordFlashcardResult(true)">✓ Got It</button>
+                <button class="btn btn-secondary btn-small" id="flashcardIncorrectBtn" onclick="app.recordFlashcardResult(false)">✗ Missed It</button>
+            </div>
+            <div class="flashcard-status" id="flashcardStatus"></div>
             <div class="navigation">
                 <button class="btn btn-small" onclick="app.shuffleCards()">🔀 Shuffle</button>
                 <div class="progress" id="flashcardProgress">1 / 10</div>
@@ -471,6 +596,13 @@ What is 2+2?,3,4,5,6,B</pre>
             </div>
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn btn-secondary btn-small" onclick="app.finishFlashcards()">Finish</button>
+            </div>
+            <div class="share-tools">
+                <p>Share this exact study set with one compact link.</p>
+                <div class="button-group">
+                    <button class="btn btn-small" onclick="app.copyShareLink()">🔗 Copy Share Link</button>
+                </div>
+                <div class="share-status" id="shareStatus"></div>
             </div>
         </div>
 
@@ -490,6 +622,13 @@ What is 2+2?,3,4,5,6,B</pre>
             </div>
             <div style="text-align: center; margin-top: 20px;">
                 <button class="btn btn-success" onclick="app.submitQuiz()">Submit Quiz 📊</button>
+            </div>
+            <div class="share-tools">
+                <p>Share this exact study set with one compact link.</p>
+                <div class="button-group">
+                    <button class="btn btn-small" onclick="app.copyShareLink()">🔗 Copy Share Link</button>
+                </div>
+                <div class="share-status" id="shareStatusQuiz"></div>
             </div>
         </div>
 
@@ -516,6 +655,19 @@ What is 2+2?,3,4,5,6,B</pre>
                 <button class="btn btn-secondary" onclick="app.goHome()">🏠 Home</button>
             </div>
         </div>
+
+        <!-- Flashcard Report Screen -->
+        <div id="flashcardReportScreen" class="screen">
+            <div class="results">
+                <h2>📚 Flashcard Report</h2>
+                <div class="flashcard-report-summary" id="flashcardReportSummary"></div>
+                <div class="flashcard-report-list" id="flashcardReportList"></div>
+                <div class="button-group">
+                    <button class="btn" onclick="app.restartFlashcards()">🔄 Restart Flashcards</button>
+                    <button class="btn btn-secondary" onclick="app.goHome()">🏠 Home</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -528,11 +680,13 @@ What is 2+2?,3,4,5,6,B</pre>
 
             init() {
                 this.loadFromStorage();
+                this.loadFromUrl();
             },
 
             selectMode(mode) {
                 this.mode = mode;
                 this.showScreen('inputScreen');
+                this.setShareStatus('');
 
                 if (mode === 'flashcard') {
                     document.getElementById('inputTitle').textContent = 'Enter Your Flashcards';
@@ -542,6 +696,49 @@ What is 2+2?,3,4,5,6,B</pre>
                     document.getElementById('inputTitle').textContent = 'Enter Your Quiz Questions';
                     document.getElementById('flashcardFormat').style.display = 'none';
                     document.getElementById('quizFormat').style.display = 'block';
+                }
+            },
+
+            setShareStatus(message) {
+                const ids = ['shareStatus', 'shareStatusQuiz'];
+                ids.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = message;
+                    }
+                });
+            },
+
+            async copyShareLink() {
+                if (!this.mode) {
+                    this.setShareStatus('Pick flashcards or quiz first.');
+                    return;
+                }
+
+                const input = document.getElementById('contentInput').value.trim();
+                if (!input) {
+                    this.setShareStatus('Add some content before creating a link.');
+                    return;
+                }
+
+                try {
+                    const payload = {
+                        mode: this.mode,
+                        input
+                    };
+                    const packed = await this.compressPayload(JSON.stringify(payload));
+                    const baseUrl = window.location.href.split('#')[0];
+                    const shareUrl = `${baseUrl}#study=${packed}`;
+
+                    if (navigator.clipboard?.writeText) {
+                        await navigator.clipboard.writeText(shareUrl);
+                        this.setShareStatus(`Share link copied (${shareUrl.length} chars).`);
+                    } else {
+                        this.setShareStatus('Clipboard not available. Copy the URL from the address bar after opening the link.');
+                        window.location.hash = `study=${packed}`;
+                    }
+                } catch (error) {
+                    this.setShareStatus(`Could not build share link: ${error.message}`);
                 }
             },
 
@@ -559,6 +756,7 @@ What is 2+2?,3,4,5,6,B</pre>
                     this.shuffle();
 
                     if (this.mode === 'flashcard') {
+                        this.resetFlashcardTracking();
                         this.showFlashcard();
                         this.showScreen('flashcardScreen');
                     } else {
@@ -635,22 +833,149 @@ What is 2+2?,3,4,5,6,B</pre>
                 }
             },
 
+            async compressPayload(text) {
+                const bytes = new TextEncoder().encode(text);
+
+                if (typeof CompressionStream === 'function') {
+                    const stream = new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip'));
+                    const compressed = await new Response(stream).arrayBuffer();
+                    return `gz.${this.bytesToBase64Url(new Uint8Array(compressed))}`;
+                }
+
+                return `raw.${this.bytesToBase64Url(bytes)}`;
+            },
+
+            async decompressPayload(value) {
+                const [format, encoded] = value.split('.', 2);
+                if (!format || !encoded) {
+                    throw new Error('Invalid share code');
+                }
+
+                const bytes = this.base64UrlToBytes(encoded);
+
+                if (format === 'gz') {
+                    if (typeof DecompressionStream !== 'function') {
+                        throw new Error('This browser cannot open compressed study links');
+                    }
+
+                    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+                    const decompressed = await new Response(stream).arrayBuffer();
+                    return new TextDecoder().decode(decompressed);
+                }
+
+                if (format === 'raw') {
+                    return new TextDecoder().decode(bytes);
+                }
+
+                throw new Error('Unknown share code format');
+            },
+
+            bytesToBase64Url(bytes) {
+                let binary = '';
+                const chunkSize = 0x8000;
+
+                for (let i = 0; i < bytes.length; i += chunkSize) {
+                    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+                }
+
+                return btoa(binary)
+                    .replace(/\+/g, '-')
+                    .replace(/\//g, '_')
+                    .replace(/=+$/g, '');
+            },
+
+            base64UrlToBytes(value) {
+                const normalized = value
+                    .replace(/-/g, '+')
+                    .replace(/_/g, '/')
+                    .padEnd(Math.ceil(value.length / 4) * 4, '=');
+                const binary = atob(normalized);
+                const bytes = new Uint8Array(binary.length);
+
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+
+                return bytes;
+            },
+
+            async loadFromUrl() {
+                const hash = window.location.hash.replace(/^#/, '');
+                if (!hash.startsWith('study=')) {
+                    return;
+                }
+
+                try {
+                    const packed = hash.slice('study='.length);
+                    const decoded = await this.decompressPayload(packed);
+                    const payload = JSON.parse(decoded);
+
+                    if (!payload.mode || !payload.input) {
+                        throw new Error('Missing study data');
+                    }
+
+                    this.selectMode(payload.mode);
+                    document.getElementById('contentInput').value = payload.input;
+                    this.setShareStatus('Study set loaded from shared link.');
+                } catch (error) {
+                    this.setShareStatus(`Could not open shared link: ${error.message}`);
+                    this.showScreen('inputScreen');
+                }
+            },
+
             // Flashcard functions
             showFlashcard() {
                 const card = this.data[this.currentIndex];
                 const flashcard = document.getElementById('flashcard');
                 const content = document.getElementById('flashcardContent');
+                const status = document.getElementById('flashcardStatus');
+                const reviewedCount = this.data.filter(item => item.studyResult !== null).length;
 
                 content.textContent = this.isFlipped ? card.back : card.front;
                 flashcard.classList.toggle('flipped', this.isFlipped);
 
+                if (card.studyResult === true) {
+                    status.textContent = 'Marked: Got it right';
+                } else if (card.studyResult === false) {
+                    status.textContent = 'Marked: Missed it';
+                } else if (!this.isFlipped) {
+                    status.textContent = 'Tap the card or either button to reveal the answer.';
+                } else {
+                    status.textContent = 'How did you do on this card?';
+                }
+
                 document.getElementById('flashcardProgress').textContent =
-                    `${this.currentIndex + 1} / ${this.data.length}`;
+                    `${this.currentIndex + 1} / ${this.data.length} • Reviewed ${reviewedCount}`;
             },
 
             flipCard() {
                 this.isFlipped = !this.isFlipped;
                 this.showFlashcard();
+            },
+
+            resetFlashcardTracking() {
+                this.data.forEach(card => {
+                    card.studyResult = null;
+                });
+            },
+
+            recordFlashcardResult(isCorrect) {
+                if (!this.isFlipped) {
+                    this.isFlipped = true;
+                    this.showFlashcard();
+                    return;
+                }
+
+                this.data[this.currentIndex].studyResult = isCorrect;
+
+                if (this.currentIndex < this.data.length - 1) {
+                    this.currentIndex++;
+                    this.isFlipped = false;
+                    this.showFlashcard();
+                    return;
+                }
+
+                this.showFlashcardReport();
             },
 
             nextCard() {
@@ -677,7 +1002,57 @@ What is 2+2?,3,4,5,6,B</pre>
             },
 
             finishFlashcards() {
-                this.goHome();
+                this.showFlashcardReport();
+            },
+
+            showFlashcardReport() {
+                const reportSummary = document.getElementById('flashcardReportSummary');
+                const reportList = document.getElementById('flashcardReportList');
+                const missedCards = this.data.filter(card => card.studyResult === false);
+                const unmarkedCards = this.data.filter(card => card.studyResult === null);
+                const correctCount = this.data.filter(card => card.studyResult === true).length;
+
+                reportSummary.innerHTML = `
+                    <div class="score-display">${correctCount} / ${this.data.length}</div>
+                    <div class="score-message">
+                        Missed: ${missedCards.length} | Unmarked: ${unmarkedCards.length}
+                    </div>
+                `;
+
+                reportList.innerHTML = '';
+
+                if (missedCards.length === 0 && unmarkedCards.length === 0) {
+                    reportList.innerHTML = `
+                        <div class="flashcard-report-item" style="background: #ecfdf5; border-left-color: #4ade80;">
+                            <div class="flashcard-report-label">All clear</div>
+                            <div>You marked every flashcard correct.</div>
+                        </div>
+                    `;
+                } else {
+                    missedCards.forEach((card, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'flashcard-report-item';
+                        item.innerHTML = `
+                            <div class="flashcard-report-label">Missed Card ${index + 1}</div>
+                            <div class="review-question">${card.front}</div>
+                            <div class="review-answer correct-answer">${card.back}</div>
+                        `;
+                        reportList.appendChild(item);
+                    });
+
+                    unmarkedCards.forEach((card, index) => {
+                        const item = document.createElement('div');
+                        item.className = 'flashcard-report-item unmarked';
+                        item.innerHTML = `
+                            <div class="flashcard-report-label">Unmarked Card ${index + 1}</div>
+                            <div class="review-question">${card.front}</div>
+                            <div class="review-answer correct-answer">${card.back}</div>
+                        `;
+                        reportList.appendChild(item);
+                    });
+                }
+
+                this.showScreen('flashcardReportScreen');
             },
 
             // Quiz functions
@@ -787,6 +1162,15 @@ What is 2+2?,3,4,5,6,B</pre>
                 this.showScreen('quizScreen');
             },
 
+            restartFlashcards() {
+                this.currentIndex = 0;
+                this.isFlipped = false;
+                this.shuffle();
+                this.resetFlashcardTracking();
+                this.showFlashcard();
+                this.showScreen('flashcardScreen');
+            },
+
             showReview() {
                 const container = document.getElementById('reviewContainer');
                 container.innerHTML = '';
@@ -853,6 +1237,7 @@ What is 2+2?,3,4,5,6,B</pre>
                 this.isFlipped = false;
                 this.userAnswers = [];
                 document.getElementById('contentInput').value = '';
+                this.setShareStatus('');
                 this.showScreen('homeScreen');
             },
 
